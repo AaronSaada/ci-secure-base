@@ -42,11 +42,9 @@ jobs:
             args: --file=Dockerfile
 
       - name: 🔍 GitLeaks - Scan des secrets
-        run: |
-            curl -sSL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64.tar.gz -o gitleaks.tar.gz
-            tar -xzf gitleaks.tar.gz
-            chmod +x gitleaks
-            ./gitleaks detect --source . --redact --verbose --exit-code 1
-        
+        uses: gitleaks/gitleaks-action@v2
+        with:
+            config-path: .gitleaks.toml
+            fail: true
         
     

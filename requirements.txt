@@ -1,6 +1,5 @@
 #VERSION BONNE
 flask==2.3.3
-setuptools>=70.0.0
 
 
 #VERSION ERREUR
