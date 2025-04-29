@@ -19,8 +19,8 @@ jobs:
       - name: Login DockerHub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build l’image Docker
         run: docker build -t devsecure-api .
@@ -28,21 +28,22 @@ jobs:
       - name: Trivy - Scan de l’image Docker
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: devsecure-api
-          format: table
-          exit-code: 1
-          ignore-unfixed: true
+            image-ref: devsecure-api
+            format: table
+            exit-code: 1
+            ignore-unfixed: true
 
       - name: Snyk - Analyse de sécurité
         uses: snyk/actions/docker@master
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: devsecure-api
-          args: --file=Dockerfile
+            image: devsecure-api
+            args: --file=Dockerfile
 
       - name: GitLeaks - Scan des secrets
-        uses: gitleaks/gitleaks-action@v2
-        with:
-          config-path: .gitleaks.toml  # optionnel si tu as un fichier custom
-          fail: true
+        run: |
+            curl -sSL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64 -o gitleaks
+            chmod +x gitleaks
+            ./gitleaks detect --source . --redact --exit-code 1 --verbose
+        
